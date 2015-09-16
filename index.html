@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Word Chart">
+<meta name="author" content="Aniket Nawani">
+<style>
+#inputDiv {
+	position: absolute;
+	top: 20%;
+	left: 50%;
+	margin-left: -50px;
+	margin-top: -25px;
+}
+#buttonDiv {
+	position: absolute;
+	top: 25%;
+	left: 53%;
+	margin-left: -50px;
+	margin-top: -25px;
+}
+#chartDiv {
+	position: absolute;
+	top: 40%;
+	left: 40%;
+	margin-left: -50px;
+	margin-top: -25px;
+}
+</style>
+</head>
+<body>
+	<!-- textbox div-->
+	<input id="inputDiv" type="text">
+
+	<!-- submit button div-->
+	<button id="buttonDiv" type="button">Submit</button>
+
+	<!-- word chart div-->
+	<div id="chartDiv" draggable="true"></div>
+	
+	<!-- jquery script -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+	<!-- zingchart script -->
+	<script src="http://cdn.zingchart.com/zingchart.min.js"></script>
+	
+	
+	<script>
+	
+	// button click event 
+  $("#buttonDiv").click(function(){
+	  // get the textbox value 
+	  var inputText = $("#inputDiv").val();
+	  // if no input in textbox alert
+	  if(inputText == ""){
+		alert("Please Enter Text !!");  
+	  }else{
+		  // split the sentence
+		  var sentence = inputText.split(" ");
+		  // filter empty words
+		  sentence = sentence.filter(function(item){return item !== ''});
+		  // call findFreq function to get frequency for each word
+		  var result = findFreq(sentence);
+		  
+		  // specify bar chart parameters
+		  var chartData={
+				  "type": "bar",
+				  // specify values
+				  "series": [
+				    { "values": result.frequency
+				    },
+				  ],
+				  // title of chart
+				  "title":{
+					  "text":"Word Chart",
+					  "background-color":"#5983A9"
+					},
+				 // x-axis parameters
+				  "scale-x":{
+					    "values":result.words,
+					    "item":{
+					        "font-angle": -90,
+					        "auto-align":true
+					    },
+					    "label":{
+					        "text":"Words",
+					        "bold":"true"
+					    }
+					},
+					// y-axis parameters
+					"scale-y":{
+					    "label":{
+					        "text":"Frequency",
+					        "bold":"true"
+					    }
+					},
+					"plotarea":{
+					      "margin-left":"dynamic",
+					      "margin-bottom":"dynamic"
+					    }
+				};
+		          // call render function of zingchart to make chart 
+				  zingchart.render({
+				    id:"chartDiv",
+				    height:400,
+				    width:500,
+				    data:chartData
+				  });
+
+	  }
+	  
+	  // This function is used to find the frequency of each word in a sentence
+	  function findFreq(arr) {
+		   // initialize arrays
+		    var word = [], freq = [], prev=null;
+		   // sort input array 
+		   arr.sort();
+		   // loop through each word of array
+		    for ( var i = 0; i < arr.length; i++ ) {
+		    	// check if word equal to previous word
+		        if ( arr[i] !== prev ) {
+		        	// add word to array
+		        	word.push(arr[i]);
+		        	freq.push(1);
+		        } else {
+		        	freq[freq.length-1]++;
+		        }
+		    	// put current word in prev
+		        prev = arr[i];
+		    }
+		    // return words and their frquencies
+		    return { words : word, frequency : freq };;
+		}
+  });
+	
+</script>
+</body>
+</html>
